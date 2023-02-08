@@ -1,4 +1,5 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
+from django.contrib.auth.models import User
 
 class IsOwnerOrReadOnly(BasePermission):
 
@@ -8,3 +9,11 @@ class IsOwnerOrReadOnly(BasePermission):
             return True
 
         return obj.owner == request.user
+    
+class IsUser(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        user = User.objects.get(pk=obj.pk)
+        if request.user.is_anonymous:
+            return False
+        return (user.username == request.user.username 
+                and user.password == request.user.password)

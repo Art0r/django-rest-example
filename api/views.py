@@ -1,29 +1,34 @@
-from rest_framework.response import Response
-from rest_framework.request import Request
-from rest_framework.decorators import api_view
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, \
-    ListAPIView, RetrieveAPIView
-from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
+from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet, mixins
 from rest_framework.serializers import Serializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from rest_framework import status
+from rest_framework import generics, response, mixins
+from rest_framework.response import Response
 from core.models import Account
-from .serializers import AccountSerializer, UserSerializer
-from rest_framework.views import APIView
-from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
-from .permissions import IsOwnerOrReadOnly
+from .serializers import AccountSerializer, UserSerializer
+from django.contrib.auth.hashers import make_password
+from .permissions import IsOwnerOrReadOnly, IsUser
 
-
-class UserViewSet(ReadOnlyModelViewSet):
-    queryset = User.objects.all()
+class UserRetrieveView(generics.RetrieveAPIView):
+    queryset = User.objects.all().order_by('first_name')
     serializer_class = UserSerializer
+    permission_classes = (IsUser,)
+
+class UserCreateView(generics.CreateAPIView):
+    queryset = User.objects.all().order_by('first_name')
+    serializer_class = UserSerializer
+
+    def perform_create(self, serializer: Serializer):
+        serializer.save(
+            password=make_password(self.request.data["password"])
+        )
 
 # basicamente um CRUD em 4 linhas, impressionante
 class AccountViewSet(ModelViewSet):
-    queryset = Account.objects.all()
+    # o - antes do campo em order_by significa ordem decrescente
+    queryset = Account.objects.all().order_by('-created')
     serializer_class = AccountSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly)
     
     def perform_create(self, serializer: Serializer):
         serializer.save(owner=self.request.user)

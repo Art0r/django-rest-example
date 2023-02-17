@@ -1,7 +1,7 @@
-from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet, mixins
+from rest_framework import viewsets
 from rest_framework.serializers import Serializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from rest_framework import generics, response, mixins
+from rest_framework import generics, response
 from rest_framework.response import Response
 from core.models import Account
 from django.contrib.auth.models import User
@@ -24,7 +24,7 @@ class UserCreateView(generics.CreateAPIView):
         )
 
 # basicamente um CRUD em 4 linhas, impressionante
-class AccountViewSet(ModelViewSet):
+class AccountViewSet(viewsets.ModelViewSet):
     # o - antes do campo em order_by significa ordem decrescente
     queryset = Account.objects.all().order_by('-created')
     serializer_class = AccountSerializer

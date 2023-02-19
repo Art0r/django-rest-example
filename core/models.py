@@ -10,15 +10,18 @@ import uuid
 #         ordering = ['id']
 
 
-class Account(models.Model):
+class Base(models.Model):
     id = models.UUIDField(name='id', primary_key=True, 
                           default=uuid.uuid4, editable=False)
-    email = models.CharField(name='email', max_length=50)
-    password = models.CharField(name='password', max_length=200)
-    owner = models.ForeignKey(name='owner', to='auth.User', 
-                              related_name='accounts', on_delete=models.CASCADE)
     created = models.DateTimeField(name='created', auto_now_add=True, editable=False)
     updated = models.DateTimeField(name='updated', auto_now=True)
+    
+    
+class Account(Base):
+    email = models.CharField(name='email', max_length=100, editable=True, null=False)
+    password = models.CharField(name='password', max_length=200, editable=True, null=False)
+    owner = models.ForeignKey(name='owner', to='auth.User', related_name='accounts', 
+                              on_delete=models.CASCADE, editable=False, null=False)
 
     class Meta:
         ordering = ('created',)

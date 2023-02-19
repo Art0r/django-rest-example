@@ -4,7 +4,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-(u)3%=i!ho*06cofaldiaw8-0c=g5jm&_hbbaide0p)^4&v0&i'
 
 DEBUG = True
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -54,6 +54,16 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
+    # TEMPLATE POSTGRESQL
+    # BEFORE pip install psycopg2 psycopg2-binary
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': 'mydatabase',
+    #     'USER': 'mydatabaseuser',
+    #     'PASSWORD': 'mypassword',
+    #     'HOST': 'localhost',
+    #     'PORT': '5432',
+    # }
     # TEMPLATE MYSQL
     # 'default': {
     #     'ENGINE': 'django.db.backends.mysql',
@@ -97,6 +107,24 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #AUTH_USER_MODELS = 'core.User'
 
 REST_FRAMEWORK = {
+    # IF YOU WANT ONLY TO RETRIEVE JSON AND NOT THE DRF FANCY PAGES
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10
 }
+
+# Email teste console
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+"""
+# Email produção
+
+EMAIL_HOST = 'localhost'
+EMAIL_HOST_USER = 'no-reply@fusion.com.br'
+EMAIL_PORT = 587
+EMAIL_USE_TSL = True
+EMAIL_HOST_PASSWORD = 'fusion'
+DEFAULT_FROM_EMAIL = 'contato@fusion.com.br'
+"""

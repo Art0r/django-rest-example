@@ -3,12 +3,6 @@ from django.contrib.auth.models import User, AbstractUser
 from django.conf import settings
 import uuid
 
-# class User(User):
-#     USERNAME_FIELD = 'email'
-    
-#     class Meta:
-#         ordering = ['id']
-
 
 class Base(models.Model):
     id = models.UUIDField(name='id', primary_key=True, 
@@ -19,7 +13,7 @@ class Base(models.Model):
     
 class Account(Base):
     email = models.CharField(name='email', max_length=100, editable=True, null=False)
-    password = models.CharField(name='password', max_length=200, editable=True, null=False)
+    password = models.CharField(name='password', max_length=100, editable=True, null=False)
     owner = models.ForeignKey(name='owner', to='auth.User', related_name='accounts', 
                               on_delete=models.CASCADE, editable=False, null=False)
 
